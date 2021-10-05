@@ -1,9 +1,32 @@
 window.addEventListener('DOMContentLoaded', (_) => {
     var room = document.getElementById("chat-text");
     var chatform = document.getElementById("input-form");
-    room.style.display = "none"
-    chatform.style.display = "none"
+
+    var allChats = [];
+    if (localStorage.getItem("chats")) {
+        allChats = JSON.parse(localStorage.getItem("chats"));
+        console.log(allChats)
+        allChats.forEach(element => {
+            let chatContent = document.createElement('p');
+            chatContent.innerHTML = `${element}` + "\n"
+            room.append(chatContent);
+
+        });
+    } else {
+        allChats = [];
+    }
     var loginForm = document.getElementById("loginForm");
+
+    if (!sessionStorage.getItem('user')) {
+        room.style.display = "none"
+        chatform.style.display = "none"
+        loginForm.style.display = "block"
+    } else {
+        room.style.display = "block"
+        chatform.style.display = "block"
+        loginForm.style.display = "none"
+    }
+
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault()
         var usr = document.getElementById("username").value
@@ -22,29 +45,19 @@ window.addEventListener('DOMContentLoaded', (_) => {
             })
             .then((result) => {
                 result.text().then(function(data) {
-                    // console.log(data)
+                    console.log(data)
                     res = JSON.parse(data)
                     $.cookie('token', res.token)
                     $.cookie('username', res.username)
+                    sessionStorage.setItem("user", "loggedin")
+                    room.style.display = "block"
+                    chatform.style.display = "block"
+                    loginForm.style.display = "none"
                     connectToSocket(res.username)
                 })
 
             })
     });
-
-    var allChats = [];
-    if (localStorage.getItem("chats")) {
-        allChats = JSON.parse(localStorage.getItem("chats"));
-        console.log(allChats)
-        allChats.forEach(element => {
-            let chatContent = document.createElement('p');
-            chatContent.innerHTML = `${element}` + "\n"
-            room.append(chatContent);
-
-        });
-    } else {
-        allChats = [];
-    }
 
     function connectToSocket(username) {
 
@@ -54,11 +67,8 @@ window.addEventListener('DOMContentLoaded', (_) => {
             let data = JSON.parse(e.data);
             allChats.push(data.username + ":" + data.text)
             localStorage.setItem("chats", JSON.stringify(allChats))
-            console.log(data)
             let chatContent = document.createElement('p');
             chatContent.innerHTML = `${data.username}: ${data.text}`
-
-
             room.append(chatContent);
         });
 
@@ -75,7 +85,8 @@ window.addEventListener('DOMContentLoaded', (_) => {
             text.value = "";
         });
         websocket.onclose = function() {
-            localStorage.clear()
+            localStorage.removeItem("chats")
+            sessionStorage.removeItem("user")
         }
     }
 })
