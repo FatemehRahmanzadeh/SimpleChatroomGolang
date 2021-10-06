@@ -87,9 +87,9 @@ func main() {
 	go handleMessages()
 	http.HandleFunc("/api/login", api.HandleLogin)
 
-	log.Print("Server starting at localhost:4444")
+	log.Print("Server starting at localhost:8080")
 
-	if err := http.ListenAndServe(":4444", nil); err != nil {
+	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
 }

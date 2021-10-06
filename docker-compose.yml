@@ -1,0 +1,21 @@
+version: '3'
+services:
+   # App Service
+  app:
+    build:
+      context: . 
+      dockerfile: dockerfile
+    ports:
+      - '8080:8080' # image docker file is in current directory
+    depends_on:
+      - sqlite3
+  sqlite3:
+    container_name: sqlite3_container
+    image: nouchka/sqlite3
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
+    volumes:
+       - /sqlite3:./userdb/
+    ports:
+      - '9000:9000' # expose ports - HOST:CONTAINER
+    restart: unless-stopped
