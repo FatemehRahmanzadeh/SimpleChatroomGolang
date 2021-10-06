@@ -2,6 +2,7 @@
 FROM golang:1.17.1-alpine3.14
 ## directory where our app going to live
 RUN mkdir /app
+ENV CGO_ENABLED=0
 ## add all project files
 COPY . /app
 WORKDIR /app

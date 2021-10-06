@@ -15,7 +15,7 @@ services:
     stdin_open: true # docker run -i
     tty: true # docker run -t
     volumes:
-       - /sqlite3:./userdb/
+       - ./app
     ports:
       - '9000:9000' # expose ports - HOST:CONTAINER
     restart: unless-stopped

@@ -31,7 +31,7 @@ window.addEventListener('DOMContentLoaded', (_) => {
         e.preventDefault()
         var usr = document.getElementById("username").value
         var pass = document.getElementById("password").value
-        fetch("http://localhost:4444/api/login", {
+        fetch("http://localhost:8080/api/login", {
                 method: "POST",
                 headers: new Headers({
                     'content-type': 'application/json',
